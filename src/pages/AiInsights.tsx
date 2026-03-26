@@ -25,7 +25,7 @@ export const AiInsights = () => {
         <BrainCircuit size={24} color="var(--accent-primary)" /> AI Insights & Optimization
       </h2>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Workforce Optimization */}
         <div className="card animate-fade-in" style={{ borderTop: '4px solid var(--accent-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
@@ -87,7 +87,7 @@ export const AiInsights = () => {
         </div>
 
         {/* Employee Performance Insight */}
-        <div className="card animate-fade-in grid-cols-2" style={{ gridColumn: 'span 2', display: 'grid', gap: '1.5rem' }}>
+        <div className="card animate-fade-in md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
               <TrendingUp color="var(--success)" />
