@@ -266,29 +266,37 @@ export const Salary = () => {
         
         <TaxOptimizer />
 
-        {/* Mobile View: Cards */}
-        <div className="md:hidden flex flex-col gap-4">
+        {/* Premium Mobile View: Cards */}
+        <div className="md:hidden flex flex-col gap-5">
           {mySalaries.map(sal => {
             const totalDeductions = Object.values(sal.deductions).reduce((a, b) => a + b, 0);
             const mLabel = months.find(m => m.value === sal.month)?.label.substring(0,3) || sal.month;
             
             return (
-              <div key={sal.id} className="card p-4">
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <span style={{ fontWeight: 600 }}>{mLabel} {sal.year}</span>
-                  <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12}/> Paid</span>
+              <div key={sal.id} className="card p-0 overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--bg-card), rgba(59, 130, 246, 0.05))', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)' }}>{mLabel} {sal.year}</span>
+                    <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}><CheckCircle size={14}/> Paid</span>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Net Pay:</span>
-                  <span style={{ fontWeight: 700, color: 'var(--success)' }}>{formatCurrency(sal.netPay)}</span>
+                
+                <div style={{ padding: '1.25rem', background: 'rgba(0, 0, 0, 0.2)' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Total Deductions</span>
+                    <span style={{ color: 'var(--danger-color)', fontWeight: 600 }}>{formatCurrency(totalDeductions)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Net Pay Received</span>
+                    <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--success-color)' }}>{formatCurrency(sal.netPay)}</span>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.875rem' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Deductions:</span>
-                  <span style={{ color: 'var(--danger-color)' }}>{formatCurrency(totalDeductions)}</span>
+
+                <div style={{ padding: '1rem' }}>
+                  <button className="btn btn-primary w-full justify-center" style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--accent-primary)', border: '1px solid var(--accent-primary)', fontWeight: 600, padding: '0.6rem' }} onClick={() => setViewingPayslip(sal)}>
+                    <FileText size={16} /> View Detailed Payslip
+                  </button>
                 </div>
-                <button className="btn btn-outline w-full justify-center" onClick={() => setViewingPayslip(sal)}>
-                  <FileText size={16} /> View Payslip
-                </button>
               </div>
             );
           })}
@@ -372,40 +380,46 @@ export const Salary = () => {
         </div>
       </div>
 
-      {/* Mobile View: Cards */}
-      <div className="md:hidden flex flex-col gap-4">
+      {/* Premium Mobile View: Cards */}
+      <div className="md:hidden flex flex-col gap-5 mt-2">
         {employees.map(emp => {
           const processed = salariesForMonth.find(s => s.employeeId === emp.id);
           const isProcessing = processingEmpId === emp.id;
           const netPay = calculateNetPay(emp);
 
           return (
-            <div key={emp.id} className="card p-4">
-               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+            <div key={emp.id} className="card p-0 overflow-hidden" style={{ 
+              background: processed ? 'linear-gradient(to bottom right, var(--bg-card), rgba(16, 185, 129, 0.05))' : 'linear-gradient(to bottom right, var(--bg-card), rgba(245, 158, 11, 0.05))',
+              border: processed ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)'
+            }}>
+               <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
-                    <div style={{ fontWeight: 600 }}>{emp.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{emp.department} • {emp.id}</div>
+                    <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{emp.name}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>{emp.id}</span>
+                      <span>{emp.department}</span>
+                    </div>
                   </div>
                   {processed ? (
-                    <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12}/> Paid</span>
+                    <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}><CheckCircle size={14}/> Paid</span>
                   ) : (
-                    <span className="badge badge-warning" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12}/> Pending</span>
+                    <span className="badge badge-warning" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}><Clock size={14}/> Pending</span>
                   )}
                </div>
                
-               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Net Payable:</span>
-                 <span style={{ fontWeight: 700 }}>{formatCurrency(netPay)}</span>
+               <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.25)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Net Payable Amount</span>
+                 <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--text-primary)' }}>{formatCurrency(netPay)}</span>
                </div>
 
-               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+               <div style={{ padding: '1rem' }}>
                  {processed ? (
-                    <button className="btn btn-secondary w-full justify-center" onClick={() => setViewingPayslip(processed)}>
-                      <FileText size={16} /> View Slip
+                    <button className="btn w-full justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', border: '1px solid var(--success-color)', fontWeight: 600, padding: '0.6rem' }} onClick={() => setViewingPayslip(processed)}>
+                      <FileText size={18} /> View Payslip
                     </button>
                   ) : (
-                    <button className="btn btn-primary w-full justify-center" onClick={() => handleProcessSalary(emp.id)} disabled={isProcessing}>
-                      {isProcessing ? <><Loader2 size={16} className="animate-spin" /> Processing...</> : 'Process Salary'}
+                    <button className="btn btn-primary w-full justify-center" style={{ padding: '0.75rem', fontSize: '0.95rem', fontWeight: 600 }} onClick={() => handleProcessSalary(emp.id)} disabled={isProcessing}>
+                      {isProcessing ? <><Loader2 size={18} className="animate-spin" /> Processing Salary...</> : 'Process Salary Now'}
                     </button>
                   )}
                </div>
