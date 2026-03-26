@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { 
@@ -12,7 +13,9 @@ import {
   PiggyBank,
   Target,
   Clock,
-  ShieldCheck
+  ShieldCheck,
+  Menu,
+  X
 } from 'lucide-react';
 import { ChatAssistant } from '../components/ChatAssistant';
 
@@ -20,6 +23,12 @@ const MainLayout = () => {
   const { user, logout } = useAppContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Close sidebar automatically on navigation route change (mobile view)
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -37,28 +46,40 @@ const MainLayout = () => {
   ];
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="flex h-screen overflow-hidden text-[var(--text-primary)] relative" style={{ backgroundColor: 'var(--bg-dark)' }}>
+      {/* Mobile Screen Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm transition-opacity" 
+          onClick={() => setIsMobileMenuOpen(false)} 
+        />
+      )}
+
       {/* Sidebar */}
-      <aside style={{ 
-        width: 'var(--sidebar-width)', 
-        backgroundColor: 'var(--bg-card)',
-        borderRight: '1px solid var(--border-color)',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+      <aside className={`
+        fixed md:relative z-50 h-full flex flex-col bg-[var(--bg-card)] border-r border-[var(--border-color)] transition-transform duration-300 w-[var(--sidebar-width)]
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
         <div style={{ 
           height: 'var(--header-height)', 
           display: 'flex', 
-          alignItems: 'center', 
+          alignItems: 'center',
+          justifyContent: 'space-between',
           padding: '0 1.5rem',
           borderBottom: '1px solid var(--border-color)'
         }}>
-          <h1 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h1 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700 }}>
             <BrainCircuit /> Payroll.ai
           </h1>
+          <button 
+            className="md:hidden text-[var(--text-secondary)] hover:text-white"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X size={24} />
+          </button>
         </div>
         
-        <nav style={{ flex: 1, padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <nav style={{ flex: 1, padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', overflowY: 'auto' }}>
           {navItems.map((item) => {
             if (item.name === 'Employees' && user?.role === 'Employee') return null; // Simple RBAC
             
@@ -79,6 +100,7 @@ const MainLayout = () => {
                   fontWeight: isActive ? 600 : 500,
                   transition: 'all 0.2s'
                 }}
+                className="hover:bg-[var(--bg-card-hover)] hover:text-white"
               >
                 {item.icon}
                 {item.name}
@@ -87,18 +109,20 @@ const MainLayout = () => {
           })}
 
           <h3 style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', margin: '1rem 0 0.5rem 0', paddingLeft: '1rem' }}>Smart Modules</h3>
-          <Link key="/finance" to="/finance" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', backgroundColor: location.pathname === '/finance' ? 'var(--accent-light)' : 'transparent', color: location.pathname === '/finance' ? 'var(--accent-primary)' : 'var(--text-secondary)', fontWeight: location.pathname === '/finance' ? 600 : 500, transition: 'all 0.2s' }}>
-            <PiggyBank size={20} /> Finance & Loans
-          </Link>
-          <Link key="/workforce" to="/workforce" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', backgroundColor: location.pathname === '/workforce' ? 'var(--accent-light)' : 'transparent', color: location.pathname === '/workforce' ? 'var(--accent-primary)' : 'var(--text-secondary)', fontWeight: location.pathname === '/workforce' ? 600 : 500, transition: 'all 0.2s' }}>
-            <Target size={20} /> Workforce & Teams
-          </Link>
-          <Link key="/shifts" to="/shifts" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', backgroundColor: location.pathname === '/shifts' ? 'var(--accent-light)' : 'transparent', color: location.pathname === '/shifts' ? 'var(--accent-primary)' : 'var(--text-secondary)', fontWeight: location.pathname === '/shifts' ? 600 : 500, transition: 'all 0.2s' }}>
-            <Clock size={20} /> Smart Shifts
-          </Link>
-          <Link key="/compliance" to="/compliance" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', backgroundColor: location.pathname === '/compliance' ? 'var(--accent-light)' : 'transparent', color: location.pathname === '/compliance' ? 'var(--accent-primary)' : 'var(--text-secondary)', fontWeight: location.pathname === '/compliance' ? 600 : 500, transition: 'all 0.2s' }}>
-            <ShieldCheck size={20} /> Compliance Tracking
-          </Link>
+          
+          {[
+            { name: 'Finance & Loans', path: '/finance', icon: <PiggyBank size={20} /> },
+            { name: 'Workforce & Teams', path: '/workforce', icon: <Target size={20} /> },
+            { name: 'Smart Shifts', path: '/shifts', icon: <Clock size={20} /> },
+            { name: 'Compliance Tracking', path: '/compliance', icon: <ShieldCheck size={20} /> }
+          ].map(mod => {
+            const isActive = location.pathname === mod.path;
+            return (
+              <Link key={mod.path} to={mod.path} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', backgroundColor: isActive ? 'var(--accent-light)' : 'transparent', color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)', fontWeight: isActive ? 600 : 500, transition: 'all 0.2s' }} className="hover:bg-[var(--bg-card-hover)] hover:text-white">
+                {mod.icon} {mod.name}
+              </Link>
+            );
+          })}
         </nav>
         
         <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)' }}>
@@ -107,7 +131,8 @@ const MainLayout = () => {
             onClick={handleLogout}
             style={{ 
               color: 'var(--text-secondary)', 
-              justifyContent: 'flex-start' 
+              justifyContent: 'flex-start',
+              padding: '0.75rem 1rem'
             }}
           >
             <LogOut size={20} />
@@ -125,12 +150,16 @@ const MainLayout = () => {
           borderBottom: '1px solid var(--border-color)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 2rem'
-        }}>
-          <div>
-            {/* Could add a breadcrumb or page title here */}
-            <h2 className="card-title" style={{ textTransform: 'capitalize' }}>
+          justifyContent: 'space-between'
+        }} className="px-4 md:px-8">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button 
+              className="md:hidden p-1 text-[var(--text-secondary)] hover:text-white" 
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+            <h2 className="card-title hidden sm:block" style={{ textTransform: 'capitalize' }}>
               {location.pathname === '/' ? 'Dashboard' : location.pathname.substring(1).replace('-', ' ')}
             </h2>
           </div>
@@ -149,7 +178,8 @@ const MainLayout = () => {
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              border: '2px solid rgba(59, 130, 246, 0.3)'
             }}>
               {user?.name?.charAt(0)}
             </div>
@@ -157,7 +187,7 @@ const MainLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
+        <main style={{ flex: 1, overflowY: 'auto', padding: '1rem md:padding-2rem' }} className="p-4 md:p-8">
           <Outlet />
         </main>
       </div>

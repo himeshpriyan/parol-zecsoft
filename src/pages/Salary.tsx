@@ -5,7 +5,7 @@ import { BrainCircuit, DollarSign, Download, Settings2, FileText, CheckCircle, C
 
 export const Salary = () => {
   const { user, employees, salaries, addSalary, loans, goals, scores, attendance, leaves } = useAppContext();
-  
+
   // Dynamic Month & Year
   const currentDate = new Date();
   const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -43,14 +43,14 @@ export const Salary = () => {
 
   const calculateNetPay = (emp: Employee) => {
     let earnings = emp.salaryStructure.basic + emp.salaryStructure.hra + emp.salaryStructure.da;
-    
+
     // Performance Incentives for specific month and year
     const empScores = scores.filter(s => s.employeeId === emp.id && s.month === selectedMonth && (s as any).year?.toString() === selectedYear);
     const totalIncentives = empScores.reduce((sum, s) => sum + s.incentiveBonus, 0);
     earnings += totalIncentives;
 
     let deductions = emp.salaryStructure.pf + emp.salaryStructure.esi + emp.salaryStructure.tax;
-    
+
     // Active Loan EMIs
     const activeLoans = loans.filter(l => l.employeeId === emp.id && l.status === 'Approved');
     const totalEmi = activeLoans.reduce((sum, l) => sum + l.emi, 0);
@@ -64,10 +64,10 @@ export const Salary = () => {
     // Absent / Leave Deductions matched precisely to YYYY-MM
     const absentDays = attendance.filter(a => a.employeeId === emp.id && a.status === 'Absent' && a.date.startsWith(targetPeriodStr)).length;
     const rejectedLeaves = leaves.filter(l => l.employeeId === emp.id && l.status === 'Rejected' && l.startDate.startsWith(targetPeriodStr)).length;
-    
+
     const perDaySalary = (emp.salaryStructure.basic + emp.salaryStructure.hra) / 30;
     const unpaidLeaveDeductions = (absentDays + rejectedLeaves) * perDaySalary;
-    
+
     deductions += unpaidLeaveDeductions;
 
     return earnings - deductions;
@@ -89,16 +89,16 @@ export const Salary = () => {
       // Re-calculate exactly as above for the final record
       const empScores = scores.filter(s => s.employeeId === emp.id && s.month === selectedMonth && (s as any).year?.toString() === selectedYear);
       const totalIncentives = empScores.reduce((sum, s) => sum + s.incentiveBonus, 0);
-      
+
       const activeLoans = loans.filter(l => l.employeeId === emp.id && l.status === 'Approved');
       const totalEmi = activeLoans.reduce((sum, l) => sum + l.emi, 0);
-      
+
       const activeGoals = goals.filter(g => g.employeeId === emp.id && g.status === 'Active');
       const totalGoalDeductions = activeGoals.reduce((sum, g) => sum + g.monthlyDeduction, 0);
-      
+
       const absentDays = attendance.filter(a => a.employeeId === emp.id && a.status === 'Absent' && a.date.startsWith(targetPeriodStr)).length;
       const rejectedLeaves = leaves.filter(l => l.employeeId === emp.id && l.status === 'Rejected' && l.startDate.startsWith(targetPeriodStr)).length;
-      
+
       const perDaySalary = (emp.salaryStructure.basic + emp.salaryStructure.hra) / 30;
       const unpaidLeaveDeductions = (absentDays + rejectedLeaves) * perDaySalary;
 
@@ -127,7 +127,7 @@ export const Salary = () => {
 
       addSalary(newSalary);
       setProcessingEmpId(null);
-      
+
       // Use standard modern alert or toast
       alert(`Salary processed successfully for ${emp.name}`);
     }, 1200);
@@ -182,9 +182,9 @@ export const Salary = () => {
               <h2 style={{ color: '#111827', fontWeight: 800 }}>PAYROLL.AI INC.</h2>
               <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Payslip for the month of {monthLabel} {viewingPayslip.year}</p>
             </div>
-            <button className="btn-icon" onClick={() => setViewingPayslip(null)} style={{ color: '#111827' }}><span style={{fontSize: '1.5rem'}}>&times;</span></button>
+            <button className="btn-icon" onClick={() => setViewingPayslip(null)} style={{ color: '#111827' }}><span style={{ fontSize: '1.5rem' }}>&times;</span></button>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ marginBottom: '2rem' }}>
             <div>
               <p><strong>Employee Name:</strong> {emp.name}</p>
@@ -214,7 +214,7 @@ export const Salary = () => {
               <div style={{ padding: '0.5rem 1rem', display: 'flex', justifyContent: 'space-between' }}><span>ESI</span><span>{formatCurrency(viewingPayslip.deductions.esi)}</span></div>
               <div style={{ padding: '0.5rem 1rem', display: 'flex', justifyContent: 'space-between' }}><span>Income Tax (TDS)</span><span>{formatCurrency(viewingPayslip.deductions.tax)}</span></div>
               {viewingPayslip.deductions.other > 0 && <div style={{ padding: '0.5rem 1rem', display: 'flex', justifyContent: 'space-between', color: '#dc2626' }}><span>Other Deductions</span><span>{formatCurrency(viewingPayslip.deductions.other)}</span></div>}
-              
+
               <div style={{ backgroundColor: '#f9fafb', padding: '0.5rem 1rem', fontWeight: 600, display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e5e7eb', height: '100%', minHeight: '40px', alignItems: 'flex-end' }}>
                 <span>Total Deductions</span><span>{formatCurrency(totalDeductions)}</span>
               </div>
@@ -231,8 +231,8 @@ export const Salary = () => {
             <div>
               <h4 style={{ fontWeight: 600, marginBottom: '0.25rem' }}>AI Payslip Summary</h4>
               <p style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
-                Your net pay this month is <strong>{formatCurrency(viewingPayslip.netPay)}</strong>. 
-                A total of {formatCurrency(totalDeductions)} was deducted, mainly towards Income Tax and PF contributions. 
+                Your net pay this month is <strong>{formatCurrency(viewingPayslip.netPay)}</strong>.
+                A total of {formatCurrency(totalDeductions)} was deducted, mainly towards Income Tax and PF contributions.
                 {viewingPayslip.earnings.overtime > 0 && ` Great job earning ${formatCurrency(viewingPayslip.earnings.overtime)} in performance incentives!`}
               </p>
             </div>
@@ -242,10 +242,10 @@ export const Salary = () => {
             <button className="btn btn-outline" onClick={() => setViewingPayslip(null)} style={{ color: '#111827', borderColor: '#d1d5db' }}>
               Close
             </button>
-            <button className="btn btn-primary" onClick={() => { 
-                alert(`Payslip for ${emp.name} has been downloaded successfully.`); 
-                setViewingPayslip(null); 
-              }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button className="btn btn-primary" onClick={() => {
+              alert(`Payslip for ${emp.name} has been downloaded successfully.`);
+              setViewingPayslip(null);
+            }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Download size={18} /> Download PDF
             </button>
           </div>
@@ -263,26 +263,26 @@ export const Salary = () => {
         <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <DollarSign size={24} color="var(--accent-primary)" /> My Salary & Payslips
         </h2>
-        
+
         <TaxOptimizer />
 
         {/* Premium Mobile View: Cards */}
         <div className="md:hidden flex flex-col gap-5">
           {mySalaries.map(sal => {
             const totalDeductions = Object.values(sal.deductions).reduce((a, b) => a + b, 0);
-            const mLabel = months.find(m => m.value === sal.month)?.label.substring(0,3) || sal.month;
-            
+            const mLabel = months.find(m => m.value === sal.month)?.label.substring(0, 3) || sal.month;
+
             return (
               <div key={sal.id} className="card p-0 overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--bg-card), rgba(59, 130, 246, 0.05))', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
                 <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)' }}>{mLabel} {sal.year}</span>
-                    <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}><CheckCircle size={14}/> Paid</span>
+                    <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}><CheckCircle size={14} /> Paid</span>
                   </div>
                 </div>
-                
+
                 <div style={{ padding: '1.25rem', background: 'rgba(0, 0, 0, 0.2)' }}>
-                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Total Deductions</span>
                     <span style={{ color: 'var(--danger-color)', fontWeight: 600 }}>{formatCurrency(totalDeductions)}</span>
                   </div>
@@ -321,7 +321,7 @@ export const Salary = () => {
                 {mySalaries.map(sal => {
                   const totalEarnings = Object.values(sal.earnings).reduce((a, b) => a + b, 0);
                   const totalDeductions = Object.values(sal.deductions).reduce((a, b) => a + b, 0);
-                  const mLabel = months.find(m => m.value === sal.month)?.label.substring(0,3) || sal.month;
+                  const mLabel = months.find(m => m.value === sal.month)?.label.substring(0, 3) || sal.month;
 
                   return (
                     <tr key={sal.id}>
@@ -331,7 +331,7 @@ export const Salary = () => {
                       <td style={{ color: 'var(--danger-color)' }}>{formatCurrency(totalDeductions)}</td>
                       <td style={{ fontWeight: 600, color: 'var(--success-color)' }}>{formatCurrency(sal.netPay)}</td>
                       <td>
-                        <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12}/> Paid</span>
+                        <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12} /> Paid</span>
                       </td>
                       <td style={{ textAlign: 'right' }}>
                         <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} onClick={() => setViewingPayslip(sal)}>
@@ -388,41 +388,41 @@ export const Salary = () => {
           const netPay = calculateNetPay(emp);
 
           return (
-            <div key={emp.id} className="card p-0 overflow-hidden" style={{ 
+            <div key={emp.id} className="card p-0 overflow-hidden" style={{
               background: processed ? 'linear-gradient(to bottom right, var(--bg-card), rgba(16, 185, 129, 0.05))' : 'linear-gradient(to bottom right, var(--bg-card), rgba(245, 158, 11, 0.05))',
               border: processed ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)'
             }}>
-               <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{emp.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>{emp.id}</span>
-                      <span>{emp.department}</span>
-                    </div>
+              <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{emp.name}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>{emp.id}</span>
+                    <span>{emp.department}</span>
                   </div>
-                  {processed ? (
-                    <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}><CheckCircle size={14}/> Paid</span>
-                  ) : (
-                    <span className="badge badge-warning" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}><Clock size={14}/> Pending</span>
-                  )}
-               </div>
-               
-               <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.25)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Net Payable Amount</span>
-                 <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--text-primary)' }}>{formatCurrency(netPay)}</span>
-               </div>
+                </div>
+                {processed ? (
+                  <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}><CheckCircle size={14} /> Paid</span>
+                ) : (
+                  <span className="badge badge-warning" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.35rem 0.6rem', fontSize: '0.75rem' }}><Clock size={14} /> Pending</span>
+                )}
+              </div>
 
-               <div style={{ padding: '1rem' }}>
-                 {processed ? (
-                    <button className="btn w-full justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', border: '1px solid var(--success-color)', fontWeight: 600, padding: '0.6rem' }} onClick={() => setViewingPayslip(processed)}>
-                      <FileText size={18} /> View Payslip
-                    </button>
-                  ) : (
-                    <button className="btn btn-primary w-full justify-center" style={{ padding: '0.75rem', fontSize: '0.95rem', fontWeight: 600 }} onClick={() => handleProcessSalary(emp.id)} disabled={isProcessing}>
-                      {isProcessing ? <><Loader2 size={18} className="animate-spin" /> Processing Salary...</> : 'Process Salary Now'}
-                    </button>
-                  )}
-               </div>
+              <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.25)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Net Payable Amount</span>
+                <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--text-primary)' }}>{formatCurrency(netPay)}</span>
+              </div>
+
+              <div style={{ padding: '1rem' }}>
+                {processed ? (
+                  <button className="btn w-full justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', border: '1px solid var(--success-color)', fontWeight: 600, padding: '0.6rem' }} onClick={() => setViewingPayslip(processed)}>
+                    <FileText size={18} /> View Payslip
+                  </button>
+                ) : (
+                  <button className="btn btn-primary w-full justify-center" style={{ padding: '0.75rem', fontSize: '0.95rem', fontWeight: 600 }} onClick={() => handleProcessSalary(emp.id)} disabled={isProcessing}>
+                    {isProcessing ? <><Loader2 size={18} className="animate-spin" /> Processing Salary...</> : 'Process Salary Now'}
+                  </button>
+                )}
+              </div>
             </div>
           );
         })}
@@ -457,9 +457,9 @@ export const Salary = () => {
                     <td style={{ fontWeight: 600 }}>{formatCurrency(netPay)}</td>
                     <td>
                       {processed ? (
-                        <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12}/> Paid</span>
+                        <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={12} /> Paid</span>
                       ) : (
-                        <span className="badge badge-warning" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={12}/> Pending</span>
+                        <span className="badge badge-warning" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> Pending</span>
                       )}
                     </td>
                     <td style={{ textAlign: 'right' }}>
