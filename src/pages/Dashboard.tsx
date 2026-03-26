@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, CreditCard, CalendarX2, Briefcase, TrendingUp, AlertTriangle, 
-  Lightbulb, Activity, CheckCircle, Clock, Plus, IndianRupee, PieChart as PieChartIcon, Target, X, Bell
+  Lightbulb, Activity, CheckCircle, Clock, Plus, IndianRupee, Target, X, Bell
 } from 'lucide-react';
 import { 
-  BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, YAxis, CartesianGrid, 
+  BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 
@@ -285,7 +285,7 @@ export const Dashboard = () => {
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {departmentData.map((entry, index) => (
+                    {departmentData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

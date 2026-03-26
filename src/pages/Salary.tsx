@@ -269,7 +269,6 @@ export const Salary = () => {
         {/* Mobile View: Cards */}
         <div className="md:hidden flex flex-col gap-4">
           {mySalaries.map(sal => {
-            const totalEarnings = Object.values(sal.earnings).reduce((a, b) => a + b, 0);
             const totalDeductions = Object.values(sal.deductions).reduce((a, b) => a + b, 0);
             const mLabel = months.find(m => m.value === sal.month)?.label.substring(0,3) || sal.month;
             

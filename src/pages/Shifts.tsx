@@ -2,9 +2,9 @@ import { useState, useMemo } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { 
   CalendarClock, MapPin, CheckCircle, BrainCircuit, AlertTriangle, 
-  Activity, Repeat, Target, ChevronLeft, ChevronRight, X
+  Activity, Repeat, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
-import type { Shift, Employee } from '../types';
+import type { Shift } from '../types';
 
 export const Shifts = () => {
   const { user, employees, shifts, leaves, attendance } = useAppContext();
