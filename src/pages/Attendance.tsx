@@ -111,7 +111,7 @@ export const Attendance = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ padding: '1rem', backgroundColor: 'var(--accent-light)', color: 'var(--accent-primary)', borderRadius: 'var(--radius-full)' }}>
                 <Clock size={24} />
@@ -141,7 +141,7 @@ export const Attendance = () => {
             </div>
           </div>
 
-          <div className="card" style={{ padding: 0 }}>
+          <div className="hidden md:block card" style={{ padding: 0 }}>
             <div className="table-container">
               <table>
                 <thead>
@@ -195,6 +195,56 @@ export const Attendance = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+          {/* Premium Mobile View Cards */}
+          <div className="md:hidden flex flex-col gap-5 mt-2">
+            {employees.map(emp => {
+                const record = todaysAttendance.find(a => a.employeeId === emp.id);
+                return (
+                  <div key={emp.id} className="card p-0 overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--bg-card), rgba(255, 255, 255, 0.02))', border: '1px solid var(--border-color)' }}>
+                    <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>{emp.name}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>{emp.id}</span>
+                          <span>{emp.department}</span>
+                        </div>
+                      </div>
+                      {record ? (
+                        <span className={`badge ${record.status === 'Present' ? 'badge-success' : record.status === 'Leave' ? 'badge-warning' : 'badge-danger'}`}>
+                          {record.status}
+                        </span>
+                      ) : (
+                        <span className="badge badge-info" style={{ backgroundColor: 'transparent', border: '1px solid var(--border-color)' }}>
+                          Not Marked
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Check In</span>
+                        <span style={{ fontWeight: 600 }}>{record?.checkIn || '-'}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Overtime</span>
+                        <span style={{ fontWeight: 600, color: record?.overtimeHours ? 'var(--warning)' : 'var(--text-primary)' }}>{record?.overtimeHours ? `${record.overtimeHours} hrs` : '-'}</span>
+                      </div>
+                    </div>
+
+                    {!record && (
+                      <div style={{ padding: '1rem', display: 'flex', gap: '1rem' }}>
+                        <button className="btn btn-primary w-full justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', border: '1px solid var(--success-color)' }} onClick={() => handleAdminMarkAttendance(emp.id, 'Present')}>
+                          <CheckCircle2 size={16} /> Preset
+                        </button>
+                        <button className="btn btn-secondary w-full justify-center" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', border: '1px solid var(--danger)' }} onClick={() => handleAdminMarkAttendance(emp.id, 'Absent')}>
+                          <XCircle size={16} /> Absent
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}

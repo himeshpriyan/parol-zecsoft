@@ -76,8 +76,8 @@ export const Finance = () => {
       </div>
 
       {/* Wellness & Score (Visible to All) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '1.5rem' }}>
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', backgroundColor: 'var(--accent-light)', borderColor: 'var(--accent-primary)' }}>
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="card w-full md:w-1/3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', backgroundColor: 'var(--accent-light)', borderColor: 'var(--accent-primary)' }}>
             <div style={{ width: '120px', height: '120px', borderRadius: '50%', backgroundColor: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '8px solid var(--accent-primary)', marginBottom: '1rem' }}>
               <span style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--accent-primary)' }}>{financialScore}</span>
             </div>
@@ -85,7 +85,7 @@ export const Finance = () => {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Your savings rate mapping is excellent. Keep it up!</p>
           </div>
 
-          <div className="card">
+          <div className="card w-full md:w-2/3">
             <h2 className="card-title" style={{ marginBottom: '1.5rem' }}>{isEmployee ? 'Salary vs Expenses (Simulated)' : 'Company Wide Expense vs Capital Growth'}</h2>
             <div style={{ height: '300px' }}>
               <ResponsiveContainer width="100%" height={250}>
@@ -104,7 +104,7 @@ export const Finance = () => {
         </div>
 
       {/* Goals & Loans List */}
-      <div style={{ display: 'grid', gridTemplateColumns: isEmployee ? '1fr 1fr' : '1fr', gap: '1.5rem' }}>
+      <div className={`grid gap-6 ${isEmployee ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
         
         {/* Goals List */}
         {isEmployee && (

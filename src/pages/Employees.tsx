@@ -109,8 +109,8 @@ export const Employees = () => {
         </button>
       </div>
 
-      {/* Employee Table */}
-      <div className="card animate-fade-in" style={{ padding: '0' }}>
+      {/* Employee Table (Desktop) */}
+      <div className="hidden md:block card animate-fade-in" style={{ padding: '0' }}>
         <div className="table-container">
           <table>
             <thead>
@@ -165,6 +165,47 @@ export const Employees = () => {
         </div>
       </div>
 
+      {/* Mobile View: Cards */}
+      <div className="md:hidden flex flex-col gap-5">
+        {filteredEmployees.map(emp => (
+          <div key={emp.id} className="card p-0 overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--bg-card), rgba(255, 255, 255, 0.02))', border: '1px solid var(--border-color)' }}>
+            <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>{emp.name}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.08)', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>{emp.id}</span>
+                  <span>{emp.department}</span>
+                </div>
+              </div>
+              <span className={`badge ${emp.status === 'Active' ? 'badge-success' : 'badge-danger'}`}>
+                {emp.status}
+              </span>
+            </div>
+            
+            <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Internal Role</span>
+              <span className={`badge ${emp.role === 'Admin' ? 'badge-primary' : emp.role === 'HR' ? 'badge-info' : 'badge-success'}`}>
+                {emp.role}
+              </span>
+            </div>
+
+            <div style={{ padding: '1rem', display: 'flex', gap: '1rem' }}>
+              <button className="btn btn-secondary w-full justify-center" onClick={() => openModal(emp)}>
+                <Edit2 size={16} /> Edit Profile
+              </button>
+              <button className="btn btn-secondary w-full justify-center" onClick={() => deleteEmployee(emp.id)} style={{ color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+                <Trash2 size={16} /> Disable
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredEmployees.length === 0 && (
+          <div className="card p-6" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+            No employees found matching "{searchTerm}"
+          </div>
+        )}
+      </div>
+
       {/* Add/Edit Modal */}
       {isModalOpen && (
         <div style={{
@@ -179,8 +220,8 @@ export const Employees = () => {
               <button className="btn-icon" onClick={() => setIsModalOpen(false)}><X size={20} /></button>
             </div>
             
-            <form onSubmit={handleSave} className="grid grid-cols-2 gap-4">
-              <div className="input-group" style={{ gridColumn: 'span 2' }}>
+            <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="input-group md:col-span-2">
                 <label>Full Name</label>
                 <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
               </div>
@@ -212,7 +253,7 @@ export const Employees = () => {
                 </select>
               </div>
 
-              <div className="input-group" style={{ gridColumn: 'span 2' }}>
+              <div className="input-group md:col-span-2">
                 <h4 style={{ margin: '0.5rem 0', color: 'var(--accent-primary)' }}>Salary Structure</h4>
               </div>
 
@@ -246,7 +287,7 @@ export const Employees = () => {
                 <input required type="number" value={formData.tax} onChange={e => setFormData({...formData, tax: Number(e.target.value)})} />
               </div>
               
-              <div style={{ gridColumn: 'span 2', display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+              <div className="md:col-span-2 flex justify-end gap-4 mt-4">
                 <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Save Employee</button>
               </div>

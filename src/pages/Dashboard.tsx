@@ -44,7 +44,7 @@ export const Dashboard = () => {
           <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Welcome back, {user?.name} 👋</h2>
         </div>
         
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="card animate-fade-in cursor-pointer hover:border-accent-primary" onClick={() => navigate('/payroll')} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <div style={{ padding: '1rem', backgroundColor: 'var(--accent-light)', color: 'var(--accent-primary)', borderRadius: 'var(--radius-lg)' }}>
               <TrendingUp size={28} />
@@ -149,7 +149,7 @@ export const Dashboard = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBottom: '2rem' }}>
       
       {/* 1. Smart Daily Summary Banner */}
-      <div className="card animate-fade-in" style={{ backgroundColor: 'var(--accent-primary)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem' }}>
+      <div className="card animate-fade-in flex flex-col md:flex-row justify-between items-start md:items-center gap-4" style={{ backgroundColor: 'var(--accent-primary)', color: 'white', padding: '1.25rem 2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Lightbulb size={24} className="animate-pulse" />
           <div>
@@ -165,7 +165,7 @@ export const Dashboard = () => {
       </div>
 
       {/* 2. Interactive KPI Cards */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="card animate-fade-in cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/employees')} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ padding: '1rem', backgroundColor: 'var(--accent-light)', color: 'var(--accent-primary)', borderRadius: 'var(--radius-lg)' }}>
             <Users size={24} />
@@ -210,12 +210,12 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (2 spans) */}
-        <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
           {/* AI Insights & Alerts combined row */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="card animate-fade-in">
                <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                 <Lightbulb size={18} className="text-accent-primary" /> AI Insights
@@ -251,7 +251,7 @@ export const Dashboard = () => {
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Predictive Cost Chart */}
             <div className="card animate-fade-in" style={{ height: '350px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
